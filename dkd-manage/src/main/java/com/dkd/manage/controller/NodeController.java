@@ -2,6 +2,8 @@ package com.dkd.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.dkd.manage.domain.vo.NodeVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,14 +25,13 @@ import com.dkd.common.core.page.TableDataInfo;
 
 /**
  * 点位管理Controller
- * 
+ *
  * @author imoyu
  * @date 2024-12-03
  */
 @RestController
 @RequestMapping("/manage/node")
-public class NodeController extends BaseController
-{
+public class NodeController extends BaseController {
     @Autowired
     private INodeService nodeService;
 
@@ -39,10 +40,9 @@ public class NodeController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('manage:node:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Node node)
-    {
+    public TableDataInfo list(Node node) {
         startPage();
-        List<Node> list = nodeService.selectNodeList(node);
+        List<NodeVo> list = nodeService.selectNodeVoList(node);
         return getDataTable(list);
     }
 
@@ -52,8 +52,7 @@ public class NodeController extends BaseController
     @PreAuthorize("@ss.hasPermi('manage:node:export')")
     @Log(title = "点位管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Node node)
-    {
+    public void export(HttpServletResponse response, Node node) {
         List<Node> list = nodeService.selectNodeList(node);
         ExcelUtil<Node> util = new ExcelUtil<Node>(Node.class);
         util.exportExcel(response, list, "点位管理数据");
@@ -64,8 +63,7 @@ public class NodeController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('manage:node:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(nodeService.selectNodeById(id));
     }
 
@@ -75,8 +73,7 @@ public class NodeController extends BaseController
     @PreAuthorize("@ss.hasPermi('manage:node:add')")
     @Log(title = "点位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Node node)
-    {
+    public AjaxResult add(@RequestBody Node node) {
         return toAjax(nodeService.insertNode(node));
     }
 
@@ -86,8 +83,7 @@ public class NodeController extends BaseController
     @PreAuthorize("@ss.hasPermi('manage:node:edit')")
     @Log(title = "点位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Node node)
-    {
+    public AjaxResult edit(@RequestBody Node node) {
         return toAjax(nodeService.updateNode(node));
     }
 
@@ -96,9 +92,8 @@ public class NodeController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('manage:node:remove')")
     @Log(title = "点位管理", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(nodeService.deleteNodeByIds(ids));
     }
 }

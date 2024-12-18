@@ -103,7 +103,7 @@ public class PartnerController extends BaseController {
     @PreAuthorize("@ss.hasPermi('manage:partner:edit')")
     @Log(title = "重置合作商密码", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd/{id}")
-    public AjaxResult resetPartnerPassword(Long id) {
+    public AjaxResult resetPartnerPassword(@PathVariable("id") Long id) {
         return toAjax(partnerService.resetPartnerPassword(id));
     }
 }
